@@ -1,0 +1,144 @@
+---
+title: "Red Wine Quality EDA Report"
+output: html_document
+knit: (function(input, ...) {
+    rmarkdown::render(
+      input,
+      output_dir = "../"
+    )
+  })
+---
+
+## Data
+```{r, include=FALSE}
+library(tidyverse)
+library(here)
+library(dplyr)
+library(GGally)
+library(reactable)
+library(janitor)
+
+wine_raw <- read_csv(here("data/winequality-red.csv"))
+
+names(wine_raw)[9] <- "ph" 
+wine <- wine_raw %>%
+  clean_names() 
+
+# we can see that there is 460 rows that are duplicate,
+# some with more than 2 duplicates.
+wine %>% get_dupes() 
+wine %>% get_dupes() %>% filter(dupe_count > 2)
+
+# remove duplicates
+wine <- distinct(wine)
+```
+
+This report explore the red wine quality dataset from UCIML, and this dataset has 12 variables that we are going to analyse.
+
+| Variable      | Description |
+| ----------- | ----------- |
+| fixed acidity      | Tartaric acid and it plays in maintaining the chemical stability of the wine and its color and finally in influencing the taste of the finished wine.       |
+| volatile acidity   | Acetic acid and it can lead to unpleasant vinegar taste.       |
+| citric acid   | It can add flavor and freshness to wine.        |
+| residual sugar   | The amount of sugar remaining after fermentation.        |
+| chlorides   | Sodium chloride and it shows the amount of salt in wine.        |
+| free sulfur dioxide   | the free form of Sulfur Dioxide(SO2) and it prevents the oxidation of wine.         |
+| total sulfur dioxide   | Total  Sulfur Dioxide(SO2).       |
+| density   | Density of wine depends on the percent of alcohol and sugar.        |
+| pH   | describes how acidic or basic a wine is, most wines are between 3-4.      |
+| sulphates   | A wine additive that acts as an antioxidant.        |
+| alcohol   | The percent of alcohol in wine.        |
+| quality   | Quality of wine as a score between 0 and 10.        |
+
+```{r, echo=FALSE}
+reactable(wine)
+```
+## Exploratory Data Analysis
+
+we will start by exploring our data by using ```glimpse()``` from tidyverse to see the dimensions of our data and the type of each variable
+```{r}
+glimpse(wine)
+```
+we have 1359 rows and 12 columns and every variable is of a double type, so we will use ```summary()``` to get a summary of different statistics methods
+```{r}
+summary(wine)
+```
+
+```{r, echo=FALSE}
+wine %>% 
+  count(quality) %>% 
+  mutate(prop = n / nrow(wine)) -> quality_prop
+
+ggplot(quality_prop, aes(quality, prop)) +
+  geom_bar(stat="identity", fill="#3B9AB2") 
+
+```
+
+We can see that the most frequent score in ```quality``` is 5 with a proportion of `r round(quality_prop$prop[3], digits = 3)` followed by 6, 7, 4, 8, 3 with proportions of `r round(quality_prop$prop[4], digits = 3)`, `r round(quality_prop$prop[5], digits = 3)`, `r round(quality_prop$prop[2], digits = 3)`, `r round(quality_prop$prop[6], digits = 3)`, `r round(quality_prop$prop[1], digits = 3)` respectively.
+
+We will use ```ggcorr``` from GGally to plot a correlation matrix and showcase the relationships between variables.
+```{r, echo=FALSE}
+ggcorr(wine, label=TRUE, size = 3, color = "grey50", high = "#3B9AB2", low = "#F21A00")
+```
+
+There are two type of association in a correlation matrix; negative and positive, there are four negative associations:
+
+* fixed acidity and pH
+* citric acid and pH
+* citric acid and volatile acidity
+* alcohol and density
+
+and four positive associations:
+
+* fixed acidity and citric acid
+* fixed acidity and density
+* free sulfur dioxide and total sulfur dioxide
+* quality and alcohol
+
+Some relationships were expected, like density and alcohol since alcohol has less density than water, it was expected that high density wine has lower alcohol. free sulfur dioxide and total sulfur dioxide was expected too, since the total SO2 includes free and bound SO2.
+
+There are some interesting relationships, like fixed acidity and pH, we can see that higher values of fixed acidity associate with lower values of pH, and after researching I have found that fixed acidity is used to lower pH in wine, the same thing apply for citric acid.
+
+We would like to find which variables can effect quality positively, we can see below a plot for each variable that we have found upward trends with quality.
+
+```{r, echo=FALSE, message=FALSE}
+ggplot(wine, aes(quality, alcohol)) +
+  geom_jitter(width = 0.25, alpha = 0.5, colour = "#3B9AB2") +
+  geom_smooth(method=lm, se=FALSE, colour = "#F21A00")
+```
+
+Alcohol has upward trend with quality, and this was expected.
+
+```{r, echo=FALSE, message=FALSE}
+ggplot(wine, aes(quality, sulphates)) +
+  geom_jitter(width = 0.25, alpha = 0.5, colour = "#3B9AB2") +
+  geom_smooth(method=lm, se=FALSE, colour = "#F21A00")
+```
+
+Sulphates are used as preservative in wine and this can explain why sulphates has such upward trend with quality.
+
+```{r, echo=FALSE, message=FALSE}
+ggplot(wine, aes(quality, citric_acid)) +
+  geom_jitter(width = 0.25, alpha = 0.5, colour = "#3B9AB2") +
+  geom_smooth(method=lm, se=FALSE, colour = "#F21A00")
+```
+
+Higher values of citric acid can leave flavor and freshness, which can explain this upward trend.
+
+```{r, echo=FALSE, message=FALSE}
+ggplot(wine, aes(quality, fixed_acidity)) +
+  geom_jitter(width = 0.25, alpha = 0.5, colour = "#3B9AB2") +
+  geom_smooth(method=lm, se=FALSE, colour = "#F21A00")
+```
+
+We have talked about how fixed acidity can lower pH levels in wine to reach the desired level which is between 3 and 4 and this explain the upward trend.
+
+## Conclusion
+We can conclude that quality is effected positively by four variables which are alcohol, sulphates, citric acid and fixed acidity. We discovered that these positive trends are because of the following:
+
+* Alcohol is a key component in wine and it can affects both flavor and texture. 
+* Sulphates are used as preservative in wine.
+* citric acid leaves a wanted flavor and freshness.
+* fixed acidity lower pH levels in wine to reach the desired level which is between 3 and 4.
+
+
