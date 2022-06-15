@@ -1,7 +1,12 @@
 # Red Wine Quality EDA Report
 
 ## Description
+
 This is an exploratory data analysis using R for the Red Wine Quality dataset from UCIML which can be found [here](https://www.kaggle.com/datasets/uciml/red-wine-quality-cortez-et-al-2009), this dataset originally has 1599 rows and 12 columns.
+
+- [Github Repo](https://github.com/Misk-DSI/individual-assignment-2-xnuray98s)
+
+- [Wine Report](./wine_report.html)
 
 ## Data
 
@@ -20,11 +25,8 @@ This is an exploratory data analysis using R for the Red Wine Quality dataset fr
 | alcohol   | The percent of alcohol in wine.        |
 | quality   | Quality of wine as a score between 0 and 10.        |
 
-## Github Pages
+## Requirements
 
-Use this [link]() to access the html page for the report.
-
-## Requirements 
 - ```tidyverse```
 - ```dplyr```
 - ```janitor```
@@ -33,6 +35,7 @@ Use this [link]() to access the html page for the report.
 - ```reactable```
 
 ## Folder Structure
+
 ```bash
 ./
 │   README.md
