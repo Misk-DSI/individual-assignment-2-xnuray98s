@@ -37,7 +37,8 @@ Use this [link]() to access the html page for the report.
 ./
 │   README.md
 │   wine_report.html    
-│   
+│   individual-assignment-2-xnuray98s.Rproj
+│
 └───archive/
 │   │   assignment.md
 │   
