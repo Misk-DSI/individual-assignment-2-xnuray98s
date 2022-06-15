@@ -1,6 +1,7 @@
 # Red Wine Quality EDA Report
 
 ## Description
+
 This is an exploratory data analysis using R for the Red Wine Quality dataset from UCIML which can be found [here](https://www.kaggle.com/datasets/uciml/red-wine-quality-cortez-et-al-2009), this dataset originally has 1599 rows and 12 columns.
 
 ## Data
@@ -22,9 +23,10 @@ This is an exploratory data analysis using R for the Red Wine Quality dataset fr
 
 ## Github Pages
 
-Use this [link]() to access the html page for the report.
+Use this [link](https://misk-dsi.github.io/individual-assignment-2-xnuray98s/) to access the website for the repo.
 
-## Requirements 
+## Requirements
+
 - ```tidyverse```
 - ```dplyr```
 - ```janitor```
@@ -33,6 +35,7 @@ Use this [link]() to access the html page for the report.
 - ```reactable```
 
 ## Folder Structure
+
 ```bash
 ./
 │   README.md
